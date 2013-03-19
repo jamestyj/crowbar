@@ -86,7 +86,8 @@ declare -A CD_POOL STAGED_POOL INSTALLED_PKGS FORCE_BARCLAMP_UPDATE
 
 # Get the OS we were asked to stage Crowbar on to.  Assume it is Ubuntu 10.10
 # unless we specify otherwise.
-OS_TO_STAGE="${1-ubuntu-10.10}"
+OS_TO_STAGE="${1-ubuntu/10.10}"
+OS_TO_STAGE="distros/${OS_TO_STAGE}"
 shift
 
 BC_PKG_TYPE="tar"
@@ -104,12 +105,9 @@ if ! [[ $OS_TO_STAGE && -d $CROWBAR_DIR/$OS_TO_STAGE-extra && \
 You must pass the name of the operating system you want to stage Crowbar
 on to.  Valid choices are:
 EOF
-cd "$CROWBAR_DIR"
-for d in *-extra; do
-    [[ -d $d && -f $d/build_lib.sh ]] || continue
-    echo "    ${d%-extra}"
-done
-exit 1
+    cd "$CROWBAR_DIR/distros"
+    find -name '*-extra' | sed -e 's/-extra$//' -e 's/^.\//    /'
+    exit 1
 fi
 
 # Source OS specific build knowledge.  This includes:

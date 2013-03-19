@@ -9,4 +9,5 @@ OS_VERSION=10.10
 OS_TOKEN="$OS-$OS_VERSION"
 OS_CODENAME=maverick
 
-. "$CROWBAR_DIR/ubuntu-common/build_lib.sh"
+
+. "$CROWBAR_DIR/distros/$OS/common/build_lib.sh"

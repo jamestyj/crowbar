@@ -9,4 +9,4 @@ OS_VERSION=11.10
 OS_TOKEN="$OS-$OS_VERSION"
 OS_CODENAME=oneiric
 
-. "$CROWBAR_DIR/ubuntu-common/build_lib.sh"
+. "$CROWBAR_DIR/distros/$OS/common/build_lib.sh"

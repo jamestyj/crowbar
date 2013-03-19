@@ -12,4 +12,4 @@ ISO=ubuntu-12.04.1-server-amd64.iso
 # uncomment to use the daily beta build, if you have it...
 #ISO=precise-server-amd64.iso
 
-. "$CROWBAR_DIR/ubuntu-common/build_lib.sh"
+. "$CROWBAR_DIR/distros/$OS/common/build_lib.sh"
