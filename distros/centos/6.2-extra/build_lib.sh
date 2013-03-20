@@ -53,12 +53,12 @@ fetch_os_iso() {
 # Throw away packages we will not need on the iso
 shrink_iso() {
     # Do nothing if we do not have a minimal-install set for this OS.
-    [[ -f $CROWBAR_DIR/$OS_TOKEN-extra/minimal-install ]] || \
+    [[ -f $CROWBAR_DIR/$OS_TO_STAGE-extra/minimal-install ]] || \
         return 0
     local pkgname pkgver
     while read pkgname pkgver; do
         INSTALLED_PKGS["$pkgname"]="$pkgver"
-    done < "$CROWBAR_DIR/$OS_TOKEN-extra/minimal-install"
+    done < "$CROWBAR_DIR/$OS_TO_STAGE-extra/minimal-install"
     mkdir -p "$BUILD_DIR/Packages"
     cp -a "$IMAGE_DIR/repodata" "$BUILD_DIR"
     make_chroot
@@ -79,4 +79,4 @@ shrink_iso() {
     sudo mount -t tmpfs -o size=1K tmpfs "$IMAGE_DIR/repodata"
 }
 
- . "$CROWBAR_DIR/redhat-common/build_lib.sh"
+ . "$CROWBAR_DIR/distros/redhat/common/build_lib.sh"

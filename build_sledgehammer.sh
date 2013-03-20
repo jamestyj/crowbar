@@ -39,9 +39,10 @@ fi
 VERBOSE=true
 
 # OS to stage Sledgehammer on to.  Defaults to CentOS 6.2
-[[ $SLEDGEHAMMER_OS ]] || SLEDGEHAMMER_OS="centos-6.2"
+[[ $SLEDGEHAMMER_OS ]] || SLEDGEHAMMER_OS="centos/6.2"
 OS_TO_STAGE="$SLEDGEHAMMER_OS"
 OS_TOKEN="$OS_TO_STAGE"
+OS_TO_STAGE="distros/${OS_TO_STAGE}"
 
 # Location for caches that should not be erased between runs
 [[ $CACHE_DIR ]] || CACHE_DIR="$HOME/.crowbar-build-cache"
@@ -94,16 +95,13 @@ if ! [[ $OS_TO_STAGE && -d $CROWBAR_DIR/$OS_TO_STAGE-extra && \
 You must pass the name of the operating system you want to stage Sledgehammer
 on to.  Valid choices are:
 EOF
-cd "$CROWBAR_DIR"
-for d in *-extra; do
-    [[ -d $d && -f $d/build_lib.sh ]] || continue
-    echo "    ${d%-extra}"
-done
-exit 1
+    cd "$CROWBAR_DIR/distros"
+    find -name '*-extra' | sed -e 's/-extra$//' -e 's/^.\//    /'
+    exit 1
 fi
 
-SLEDGEHAMMER_CHROOT_CACHE="$CACHE_DIR/sledgehammer/$OS_TO_STAGE/chroot_cache"
-SLEDGEHAMMER_LIVECD_CACHE="$CACHE_DIR/sledgehammer/$OS_TO_STAGE/livecd_cache"
+SLEDGEHAMMER_CHROOT_CACHE="$CACHE_DIR/sledgehammer/$OS_TOKEN/chroot_cache"
+SLEDGEHAMMER_LIVECD_CACHE="$CACHE_DIR/sledgehammer/$OS_TOKEN/livecd_cache"
 
 [[ -f $CROWBAR_DIR/$OS_TO_STAGE-extra/build_sledgehammer_lib.sh && \
     -f $CROWBAR_DIR/$OS_TO_STAGE-extra/sledgehammer.ks ]] || \
