@@ -1,8 +1,35 @@
-## Testing Crowbar
+# Testing Crowbar
 
-The Dell Crowbar team believes in testing!  We want you to write tests for your code and include it in your pull requests.
+The Crowbar team believes in testing! We want you to write tests for your code
+and include it in your pull requests.
 
-We have several mechanisms for testing and the following sections will help you understand them, use them and love them.
+We have several mechanisms for testing and the following sections will help you
+understand them, use them and love them.
+
+## Testing the Rails framework
+
+## Testing the cookbooks
+
+## Integration test - entire Crowbar stack
+
+
+
+## 1 Test types
+
+- Link to testing in Rails
+
+### 1.1 Unit tests
+
+### 1.2 Functional tests
+
+### 1.3 Integration tests
+
+### 1.4 Manual / development
+
+- Jenkins, mkcloud, ./dev build
+
+## Automated tests
+
 
 ### Automated tests [![Build Status](https://travis-ci.org/crowbar/travis-ci-crowbar.png?branch=master)](https://travis-ci.org/crowbar/travis-ci-crowbar)
 
