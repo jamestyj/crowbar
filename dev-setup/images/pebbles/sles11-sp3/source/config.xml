@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<image schemaversion="5.4" name="Crowbar_1.6_dev_vm">
+<!-- =====================================================================
+      Kiwi XML config file
+
+      For details on Kiwi itself, refer to http://opensuse.github.io/kiwi/.
+      For docs on this config file, refer to the following links:
+      - http://doc.opensuse.org/projects/kiwi/doc/
+      - http://doc.opensuse.org/projects/kiwi/schema-doc/
+
+      Sidenote: This comment block be above the <image> tag, but that chokes
+      Kiwi's XSLT transformation.
+     ===================================================================== -->
+
+  <!-- ========================================
+        Metadata: description
+       ======================================== -->
+  <description type="system">
+    <author>James Tan</author>
+    <contact>jatan@suse.com</contact>
+    <specification>Crowbar 1.6 (Pebbles) dev VM, based on SLES11 SP3.
+    </specification>
+  </description>
+
+  <!-- ========================================
+        VM/Image config options
+       ======================================== -->
+  <preferences>
+    <!-- Use semantic versioning: http://semver.org/ -->
+    <version>1.0.0</version>
+
+    <!-- We currently build only the native KVM image format (.qcow2). Use
+         profiles (http://doc.opensuse.org/projects/kiwi/doc/#sec.description.profiles)
+         if more formats need to be added. -->
+    <type image="vmx" filesystem="ext3" boot="vmxboot/suse-SLES11"
+          format="qcow2" checkprebuilt="true">
+      <!-- The qcow2 format supports sparseness by default, so the resulting
+           image file actually only uses the space it needs (~2G), not the full
+           size specified here and grows as required. It can also be
+           pre-allocated to improve I/O performance. -->
+      <size unit="G" additive="false">20</size>
+    </type>
+
+    <packagemanager>zypper</packagemanager>
+		<boot-theme>SLES</boot-theme>
+		<hwclock>utc</hwclock>
+
+    <!-- FIXME: These are user specific and should be ask-on-first boot -->
+		<locale>en_US</locale>
+		<keytable>us.map.gz</keytable>
+		<timezone>Europe/Berlin</timezone>
+
+    <!-- Skip RPM checks to speed up the build -->
+    <rpm-check-signatures>false</rpm-check-signatures>
+  </preferences>
+
+  <!-- ========================================
+        System users
+       ======================================== -->
+  <users group="root">
+    <!-- Default root password is 'linux'. Obviously insecure so only use this
+         for internal development systems! -->
+    <user name="root" pwd="$1$4p4yUKfg$QOevbHqNwicFAuS5RgWGQ1" home="/root"
+          shell="/bin/bash"/>
+  </users>
+
+  <!-- ========================================
+        Software repositories: SUSE internal
+       ======================================== -->
+  <!-- FIXME: Workaround for rubygem-sass -->
+  <repository type="rpm-md" imageinclude="true" alias="SLE-11-SP1-Update">
+    <source path="http://dist.suse.de/ibs/SUSE:/SLE-11-SP1:/Update/standard/"/>
+  </repository>
+
+  <!-- FIXME: Workaround for rubygem-json -->
+  <repository type="rpm-md" imageinclude="true" alias="SLE-11-SP2-Update">
+    <source path="http://dist.suse.de/ibs/SUSE:/SLE-11-SP2:/Update/standard/"/>
+  </repository>
+
+  <!-- Repositories: SLES 11 SP3 -->
+  <!-- SLE 11 SP3 and onwards reverts back the old maintenance model, so we
+       don't need the SP1 and SP2 repositories. Yay! -->
+  <repository type="yast2" imageinclude="true" alias="SLES-11-SP3">
+    <source path="http://dist.suse.de/install/SLP/SLES-11-SP3-LATEST/x86_64/DVD1/"/>
+  </repository>
+  <repository type="rpm-md" imageinclude="true" alias="SLES-11-SP3-Updates">
+    <source path="http://update.suse.de/zypp/x86_64/update/SLE-SERVER/11-SP3/"/>
+  </repository>
+  <repository type="yast2" imageinclude="true" alias="SLE-11-SP3-SDK">
+    <source path="http://dist.suse.de/install/SLP/SLE-11-SP3-SDK-LATEST/x86_64/DVD1/"/>
+  </repository>
+  <repository type="rpm-md" imageinclude="true" alias="SLE-11-SP3-SDK-Updates">
+    <source path="http://update.suse.de/zypp/x86_64/update/SLE-SDK/11-SP3/"/>
+  </repository>
+
+  <!-- Repositories: Cloud -->
+  <repository type="rpm-md" imageinclude="true" alias="Devel:Cloud:2.0-SLE_11_SP3">
+    <source path="http://dist.suse.de/ibs/Devel:/Cloud:/2.0/SLE_11_SP3/"/>
+  </repository>
+
+  <!-- ========================================
+        Software repositories: Public
+       ======================================== -->
+  <!-- Repositories: Dev tools -->
+  <repository type="rpm-md" imageinclude="true" alias="Utils">
+    <!-- FIXME: Use the SP3 repo instead of SP2 when it's available. -->
+    <source path="http://download.opensuse.org/repositories/utilities/SLE_11_SP2"/>
+  </repository>
+  <repository type="rpm-md" imageinclude="true" alias="Network-Utils">
+    <!-- FIXME: Use the SP3 repo instead of SP2 when it's available. -->
+    <source path="http://download.opensuse.org/repositories/network:/utilities/SLE_11_SP2/"/>
+  </repository>
+
+  <!-- ========================================
+        Software selection: Patterns and packages
+
+        There's a long list of packages in this section, which are pulled from
+        the software repositories specified above. To ease maintenance, we
+        group the software selection by their use cases, ordered with patterns
+        first, then alphabetically.
+       ======================================== -->
+  <packages type="image" patternType="onlyRequired">
+    <!-- JeOS packages: The following packages are derived from
+         /usr/share/kiwi/image/suse-SLE11-JeOS/config.xml in the kiwi-templates
+         package. -->
+    <package name="aaa_base"/>
+    <package name="bash"/>
+    <package name="branding-SLES"/>
+    <package name="coreutils"/>
+    <package name="cracklib-dict-full"/>
+    <package name="device-mapper"/>
+    <package name="dhcpcd"/>
+    <package name="e2fsprogs"/>
+    <package name="elfutils"/>
+    <package name="filesystem"/>
+    <package name="glib2-branding-SLES"/>
+    <package name="glibc"/>
+    <package name="ifplugd"/>
+    <package name="initviocons"/>
+    <package name="insserv"/>
+    <package name="iputils"/>
+    <package name="irqbalance"/>
+    <package name="kbd"/>
+    <package name="klogd"/>
+    <package name="login"/>
+    <package name="mdadm"/>
+    <package name="mkinitrd"/>
+    <package name="module-init-tools"/>
+    <package name="ncurses-utils"/>
+    <package name="nfs-client"/>
+    <package name="openssh"/>
+    <package name="openssl-certs"/>
+    <package name="pam"/>
+    <package name="pam-modules"/>
+    <package name="procps"/>
+    <package name="pwdutils"/>
+    <package name="release-notes-sles"/>
+    <package name="rpcbind"/>
+    <package name="rpm"/>
+    <package name="sles-release"/>
+    <package name="sles-release-DVD"/>
+    <package name="suse-build-key"/>
+    <package name="suseRegister"/>
+    <package name="sysconfig"/>
+    <package name="syslinux"/>
+    <package name="syslog-ng"/>
+    <package name="sysvinit"/>
+    <package name="tar"/>
+    <package name="timezone"/>
+    <package name="vim"/>
+    <package name="vim-base"/>
+    <package name="w3m"/>
+    <package name="zypper"/>
+
+    <!-- Also from JeOS template, but the vmxFlavour profile sections -->
+    <package name="bootsplash-branding-SLES" bootinclude="true" bootdelete="true"/>
+    <package name="gfxboot-branding-SLES"    bootinclude="true" bootdelete="true"/>
+    <package name="grub"/>
+    <package name="kernel-default"/>
+    <package name="kernel-default-base"/>
+
+    <!-- Additional setup tools -->
+    <package name="glibc-locale"/>
+    <package name="ntp"/>
+    <package name="rsync"/>
+
+    <!-- SUSE Cloud packages -->
+    <package name="couchdb"/>
+    <package name="createrepo"/>
+    <package name="iptables"/>
+    <package name="rabbitmq-server"/>
+    <package name="rubygem-chef"/>
+    <package name="rubygem-chef-server"/>
+    <package name="rubygem-cstruct"/>
+    <package name="rubygem-i18n"/>
+    <package name="rubygem-kwalify"/>
+    <package name="rubygem-ruby-shadow"/>
+    <package name="rubygem-sass"/>
+    <package name="sleshammer"/>
+    <package name="xinetd"/>
+
+    <!-- Dev tools -->
+    <opensusePattern name="sdk_rails"/>
+    <opensusePattern name="sdk_ruby"/>
+    <opensusePattern name="sdk_c_c++"/>
+    <package name="command-not-found"/>
+    <package name="emacs"/>
+    <package name="git"/>
+    <package name="htop"/>
+    <package name="iotop"/>
+    <package name="less"/>
+    <package name="lsof"/>
+    <package name="ltrace"/>
+    <package name="man"/>
+    <package name="man-pages"/>
+    <package name="patch"/>
+    <package name="strace"/>
+    <package name="tcpdump"/>
+    <package name="telnet"/>
+    <package name="tmux"/>
+    <package name="tree"/>
+    <package name="vim-data"/>
+    <package name="wireshark"/>
+  </packages>
+
+  <!-- Bootstrap packages. You can mostly ignore this. -->
+  <packages type="bootstrap">
+    <package name="filesystem"/>
+    <package name="glibc-locale"/>
+		<package name="cracklib-dict-full"/>
+		<package name="openssl-certs"/>
+  </packages>
+</image>

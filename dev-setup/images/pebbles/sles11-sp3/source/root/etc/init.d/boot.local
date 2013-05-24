@@ -1,0 +1,36 @@
+#! /bin/sh
+#
+# Copyright (c) 2002 SuSE Linux AG Nuernberg, Germany.  All rights reserved.
+#
+# Author: Werner Fink <werner@suse.de>, 1996
+#         Burchard Steinbild, 1996
+#
+# /etc/init.d/boot.local
+#
+# script with local commands to be executed from init on system startup
+#
+# Here you should add things, that should happen directly after booting
+# before we're going to the first run level.
+#
+
+firstboot_file=/etc/init.d/is-firstboot
+
+if [ -f $firstboot_file ]; then
+  # Set hostname (must match /etc/HOSTNAME)
+  echo 192.168.124.10 pebbles.crowbar.dev pebbles >> /etc/hosts
+
+  # If you're outside the SUSE NUE network or prefer your own mount point, change
+  # the following accordingly.
+  host=sentosa.suse.de
+  echo "$host:/mnt/suse-cloud-2 /srv/tftpboot/repos/Cloud       nfs   ro,nolock 0 0" >> /etc/fstab
+  echo "$host:/mnt/sles-11-sp3  /srv/tftpboot/suse-11.3/install nfs   ro,nolock 0 0" >> /etc/fstab
+
+  rm $firstboot_file
+fi
+
+VDA=/dev/vda1
+if [ -e $VDA ]; then
+  # Workaround for missing barclamp support for virtual disks
+  mkdir -p /dev/disk/by-id
+  ln -s $VDA /dev/disk/by-id/42
+fi
